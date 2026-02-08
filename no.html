@@ -36,5 +36,45 @@
     <div class="msg">Your tooz will be beaten with no mercy</div>
     <a href="index.html">⬅ go back to yes YALLAH!!!</a>
   </div>
+  <script>
+  const NOTIFY_URL = "https://script.google.com/macros/s/AKfycbzPhPU8Ctt8cS5z3pFGrY_7G700vgfrkt5DcX6mpS59hyuD2D-NLHO_1w4GTIEhjwrY/exec";
+
+  function getSid() {
+    let sid = sessionStorage.getItem("sid");
+    if (!sid) {
+      sid = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2));
+      sessionStorage.setItem("sid", sid);
+    }
+    return sid;
+  }
+
+  function notify() {
+    if (!NOTIFY_URL) return;
+    const payload = {
+      choice: "no",
+      page: "no.html",
+      sid: getSid(),
+      at: new Date().toISOString(),
+      ua: navigator.userAgent
+    };
+
+    try {
+      if (navigator.sendBeacon) {
+        const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+        navigator.sendBeacon(NOTIFY_URL, blob);
+      } else {
+        fetch(NOTIFY_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+          mode: "no-cors"
+        });
+      }
+    } catch (e) {}
+  }
+
+  notify();
+</script>
+
 </body>
 </html>
