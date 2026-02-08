@@ -5,103 +5,45 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Valentine?</title>
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 0; padding: 0; background:#fff7fb; }
-    .wrap { max-width: 720px; margin: 0 auto; padding: 28px 18px 50px; text-align: center; }
-    h1 { font-size: 28px; margin: 18px 0 10px; }
-    .card { background: white; border-radius: 18px; padding: 22px; box-shadow: 0 8px 24px rgba(0,0,0,.08); }
-    .q { font-size: 22px; margin: 8px 0 18px; }
-    .btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-    button { border: 0; border-radius: 14px; padding: 14px 18px; font-size: 18px; cursor: pointer; }
-    .yes { background: #ff4d88; color: white; }
-    .no  { background: #111827; color: white; }
-    .reset { margin-top: 14px; background: #f3f4f6; color: #111827; }
-    .result { margin-top: 18px; min-height: 72px; }
-    .big { font-size: 44px; line-height: 1; margin: 6px 0; }
-    .msg { font-size: 20px; }
-    .small { margin-top: 10px; font-size: 13px; color: #6b7280; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: #fff7fb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.1);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+    h1 { margin-bottom: 20px; }
+    .btns { display: flex; gap: 15px; justify-content: center; }
+    a {
+      text-decoration: none;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-size: 18px;
+      color: white;
+      display: inline-block;
+    }
+    .yes { background: #ff4d88; }
+    .no { background: #111827; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>💘 Azshuneeh's invitation to be my one & only valantine 💘</h1>
-
-    <div class="card">
-      <div class="q">will you be my valentine ?</div>
-
-      <div class="btns">
-        <button class="yes" id="yesBtn">Yes ❤️</button>
-        <button class="no" id="noBtn">No 😡</button>
-      </div>
-
-      <div class="result" id="result">
-        <div class="small">Pick one… (u better pick the right one or else)</div>
-      </div>
-
-      <button class="reset" id="resetBtn">Reset / Try again</button>
+  <div class="card">
+    <h1>will you be my valentine ? 💘</h1>
+    <div class="btns">
+      <a class="yes" href="yes.html">Yes ✅</a>
+      <a class="no" href="no.html">No ❌</a>
     </div>
   </div>
-
-  <script>
-    // 1) Put your Google Apps Script "web app" URL here (from step 3 below).
-    // If you don't want notifications, leave it as an empty string: ""
-    const NOTIFY_URL = ""; // <-- paste your URL here later
-
-    const result = document.getElementById("result");
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
-    const resetBtn = document.getElementById("resetBtn");
-
-    function render(choice) {
-      if (choice === "yes") {
-        result.innerHTML = `
-          <div class="big">😍</div>
-          <div class="msg">Zooj & Mart ✅❤️ your tooz will be eaten with love 🍑❤️</div>
-        `;
-      } else if (choice === "no") {
-        result.innerHTML = `
-          <div class="big">😢</div>
-          <div class="msg">Your tooz will be beaten without love, go back to yes🤬</div>
-        `;
-      } else {
-        result.innerHTML = `<div class="small">Pick one… (u better pick the right one or else)</div>`;
-      }
-    }
-
-    async function notify(choice) {
-      if (!NOTIFY_URL) return;
-
-      // A tiny "session id" so you can see multiple clicks from the same visit
-      const sid = sessionStorage.getItem("sid") || (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2));
-      sessionStorage.setItem("sid", sid);
-
-      const payload = {
-        choice,
-        sid,
-        // Optional: useful metadata (not always available depending on browser/privacy settings)
-        at: new Date().toISOString(),
-        ua: navigator.userAgent
-      };
-
-      // Send without interrupting UX
-      try {
-        // Use sendBeacon when possible (more reliable on mobile)
-        if (navigator.sendBeacon) {
-          const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
-          navigator.sendBeacon(NOTIFY_URL, blob);
-        } else {
-          await fetch(NOTIFY_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-            mode: "no-cors"
-          });
-        }
-      } catch (e) { /* ignore */ }
-    }
-
-    yesBtn.addEventListener("click", () => { render("yes"); notify("yes"); });
-    noBtn.addEventListener("click", () => { render("no"); notify("no"); });
-    resetBtn.addEventListener("click", () => render(null));
-  </script>
 </body>
 </html>
